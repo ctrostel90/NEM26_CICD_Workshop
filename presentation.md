@@ -16,28 +16,32 @@ theme:
 <!-- end_slide -->
 
 # Agenda
-
-#### What is CICD
-#### Beckhoff Products and Advantages
-
+<!-- alignment: 'right'-->
+### Intro
+- What is CICD
+- Beckhoff Products and Advantages
+<!--pause-->
 ### Testing Introduction
-#### What is Unit Testing
-#### Unit Testing vs Integration Testing
-#### Hands on exercises
+- What is Unit Testing
+- Unit Testing vs Integration Testing
+- Hands on exercises
 
+<!--pause-->
 ### Unit Testable Code
-#### Techniques on how to create it
-#### Pitfalls
-#### Examples and Hands on Exercises
+- Techniques on how to create it
+- Pitfalls
+- Examples and Hands on Exercises
 
+<!--pause-->
 ### Customer Strategies
-#### Approaching conversation with customers
-#### Adding unit testing to existing code bases
+- Approaching conversation with customers
+- Adding unit testing to existing code bases
 
+<!--pause-->
 ### Test Driven Development
-#### What is it?
-#### Pros/Cons
-#### Hands On exercises
+- What is it?
+- Pros/Cons
+- Hands On exercises
 
 <!-- end_slide -->
 
@@ -54,28 +58,41 @@ Everyone should've already installed
 # CICD Presentation
 
 To Powerpoint!
-
+![](images/twincat_presentation.png)
 <!-- end_slide -->
 
 # Unit Tests
 
 What is a unit test?
 
+<!-- pause -->
 It's an assertion
 
+<!-- pause -->
 ```
 Take a set of known inputs, if they go through a function, does the output equal what is expected?
-
-ActualOutput = DoSomething(Inputs)
-Assert(ActualOutput,ExpectedOuput)
 ```
+
+
+```
+ActualOutput = DoSomething(Inputs)
+AssertEqual(ActualOutput,ExpectedOuput)
+```
+
+<!-- pause -->
 With that, let's make one.
+
+<!-- pause -->
+To TwinCat!
+<!-- end_slide -->
+# Making a UnitTest
 
 We'll start with the most common basic exmaple, some simple math functions.
 
+<!-- pause -->
 Create a new FB, name it adder. Add two inputs and an output
 
-``` 
+```pascal
 FUNCTION_BLOCK Adder
 VAR_INPUT
     Input1 : LREAL;
@@ -91,6 +108,8 @@ END_VAR
 ```
 Output := Input1 + Input2;
 ```
+
+<!-- end_slide -->
 
 In our Main let's instantiate that adder, and make a little test.
 
@@ -111,6 +130,8 @@ END_IF
 ```
 
 Now we have a simple test! We can change the Adder's functionality and see the result of our test. 
+
+<!-- end_slide -->
 
 Let's expand and make another function block, a Divider.
 
@@ -142,6 +163,8 @@ IF runDividerTest THEN
 END_IF
 ```
 
+<!-- end_slide -->
+
 Now we have a divider and a test.
 
 But we have a divide by 0 potential. So let's make a test that will catch that and then implement the fix to make it pass.
@@ -159,6 +182,7 @@ IF runDividerTest2 THEN
 END_IF
 ```
 
+<!-- pause -->
 
 Inside our Divider we'll check for Input2 to be 0.
 
@@ -167,10 +191,18 @@ IF Input2 = 0 THEN
     Output := 0;
     RETURN;
 END_IF
+
 Ouput := Input1 / Input2;
 ```
 
-Now we have 2 functions with a few test cases. There are still plenty of more test cases we could want to ensure our function blocks could handle. Negative numbers, decimals etc etc.
+<!-- end_slide -->
+# Exercise End
+
+Now we have 2 functions with a few test cases. 
+<!-- pause-->
+There are still plenty of more test cases we could want to ensure our function blocks could handle. Negative numbers, decimals etc etc.
+
+<!-- pause-->
 
 But this setup is cumbersome and really difficult for us to manage, we have to add all these extra boiler plate variables etc etc.
 
@@ -184,6 +216,7 @@ There are lots of options you've likely heard about in our space of automation a
 
 But, we now have a framework!
 
+<!-- end_slide -->
 # TF1040
 
 We're not going to deep dive TF1040, but we'll use it moving forward in this workshop.
@@ -192,6 +225,10 @@ To Powerpoint!
 
 <!-- end_slide -->
 # Refactor to use TF1040
+
+Let's refactor to use TF1040 instead.
+
+<!-- pause -->
 
 Add in the Tc3_PlcTestFramework to the project.
 
@@ -211,6 +248,7 @@ AssertEqual(expected := 4, actual := AdderTest.Output);
 Succeeded();
 ```
 
+<!-- pause -->
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
 ```
@@ -327,6 +365,7 @@ Instead, we can utilize the programming implementation of the first example of a
 We'll start by adding two new Interfaces to our project named `I_Teacher` and `I_SubjectMatter`.
 
 For the `I_Teacher` we'll add one Method Teach:
+
 ```
 Teach : STRING
 VAR_INPUT
@@ -349,7 +388,7 @@ END_VAR
 
 On our TeacherOOP object, in the getter/setter for the SubjectMatter property assign/return the `_SubjectMatter` variable
 
-```Property SubjectMatter: I_SubjectMatter
+```
 GET:
     SubjectMatter := _SubjectMatter;
 SET:
