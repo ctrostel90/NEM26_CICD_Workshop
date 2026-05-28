@@ -92,7 +92,7 @@ We'll start with the most common basic exmaple, some simple math functions.
 <!-- pause -->
 Create a new FB, name it adder. Add two inputs and an output
 
-```pascal
+```js
 FUNCTION_BLOCK Adder
 VAR_INPUT
     Input1 : LREAL;
@@ -105,7 +105,7 @@ VAR
 END_VAR
 ```
 
-```
+```js
 Output := Input1 + Input2;
 ```
 
@@ -113,7 +113,7 @@ Output := Input1 + Input2;
 
 In our Main let's instantiate that adder, and make a little test.
 
-```
+```js
 VAR
     TestAdder : Adder;
     runTest : BOOL;
@@ -121,7 +121,7 @@ VAR
 END_VAR
 
 ```
-```
+```js
 IF runTest THEN
 	runTest := FALSE;
 	testAdder(Input1 := 1, Input2 := 2);
@@ -135,7 +135,7 @@ Now we have a simple test! We can change the Adder's functionality and see the r
 
 Let's expand and make another function block, a Divider.
 
-```
+```js
 FUNCTION_BLOCK Divider
 VAR_INPUT
     Input1 : LREAL;
@@ -145,13 +145,13 @@ VAR_OUTPUT
     Output : LREAL;
 END_VAR
 ```
-```
+```js
 Output := Input1 / Input2;
 ```
 
 Add our first test to MAIN.
 
-```
+```js
 TestDivider : Divider;
 runDividerTest : BOOL;
 DividerTestPass : BOOL;
@@ -171,7 +171,7 @@ But we have a divide by 0 potential. So let's make a test that will catch that a
 
 In Main we'll add our test variables and test code
 
-```
+```js
 runDividerTest2 : BOOL;
 DividerTestPass2 : BOOL;
 
@@ -186,7 +186,7 @@ END_IF
 
 Inside our Divider we'll check for Input2 to be 0.
 
-```
+```js
 IF Input2 = 0 THEN
     Output := 0;
     RETURN;
@@ -234,7 +234,7 @@ Add in the Tc3_PlcTestFramework to the project.
 
 Create a new FB named AdderTests. Use the following code as the header/declaration.
 
-```
+```js
 { attribute 'Name':='Adder-Test' }
 { attribute 'Timeout':='t#5s' }
 { attribute 'Owner':='TestOwner' }
@@ -251,7 +251,7 @@ Succeeded();
 <!-- pause -->
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
-```
+```js
 { attribute 'Name':='Divider-Test' }
 { attribute 'Timeout':='t#5s' }
 { attribute 'Owner':='TestOwner' }
@@ -270,7 +270,7 @@ Succeeded();
 
 Finally, in our MAIN we can remove all our pre-existing code and add the necessary pieces for the testing framework.
 
-```
+```js
 VAR
     TestAdder : AdderTests;
     TestDivider : DividerTests;
@@ -290,18 +290,18 @@ We're going to set the stage here by imaging we're all teachers. You all know ho
 
 So we can imagine that we have a
 
-```
+```js
 FUNCTION_BLOCK HistoryTeacher
 METHOD Teach
 StudentKnowledge := StudentKnowledge + "History";
 ```
 
-```
+```js
 FUNCTION_BLOCK MathTeacher
 METHOD Teach
 StudentKnowledge := StudentKnowledge + "Math";
 ```
-```
+```js
 
 FUNCTION_BLOCK ScienceTeacher
 METHOD Teach
@@ -315,7 +315,7 @@ Let's continue our example in some more code.
 
 We first create a Teacher FB that has a local variable assocaited to it:
 
-```
+```js
 FUNCTION_BLOCK Teacher
 VAR
 	_TeachTopic : E_TeachingTopic;
@@ -324,7 +324,7 @@ END_VAR
 
 The Teaching topic enumeration we create to have our 3 example topics from above.
 
-```
+```js
 TYPE E_TeachingTopic :
 (
 	History,
@@ -340,7 +340,7 @@ Additionally, we'll create a `Teach` method that takes a "Student's knowledge" (
 
 We can solve it with a simple case statement. Something like this:
 
-```
+```js
 METHOD Teach : STRING
 VAR_INPUT
 	Student : STRING;
@@ -366,7 +366,7 @@ We'll start by adding two new Interfaces to our project named `I_Teacher` and `I
 
 For the `I_Teacher` we'll add one Method Teach:
 
-```
+```js
 Teach : STRING
 VAR_INPUT
     StudentKnowledge : STRING;
@@ -379,7 +379,7 @@ For the `I_SubjectMatter`, we'll add a method named `GetKnowledge` that returns 
 
 We'll now make a new Teacher object named TeacherOOP that implements `I_Teacher`. This teacher we'll define as follows:
 
-```
+```js
 FUNCTION_BLOCK TeacherOOP IMPLEMENTS I_Teacher
 VAR
 	_SubjectMatter : I_SubjectMatter;
@@ -388,7 +388,7 @@ END_VAR
 
 On our TeacherOOP object, in the getter/setter for the SubjectMatter property assign/return the `_SubjectMatter` variable
 
-```
+```js
 GET:
     SubjectMatter := _SubjectMatter;
 SET:
@@ -397,7 +397,7 @@ SET:
 
 Next step is to add an implementation to the `Teach` method on the Teacher. For that we'll do the following:
 
-```
+```js
 Teach : STRING
 VAR_INPUT
     StudentKnowledge : STRING;
@@ -409,14 +409,14 @@ Teach := StudentKnowledge;
 
 The final step is for us to create our Subject Matters. We'll make three quickly.
 
-```
+```js
 CalculusSubject IMPLEMENTS I_SubjectMatter
 
 GetKnowledge() : STRING
 
 GetKnowledge := 'Calculus';
 ```
-```
+```js
 EnglishLiteratureSubject IMPLEMENTS I_SubjectMatter
 
 GetKnowledge() : STRING
@@ -425,7 +425,7 @@ GetKnowledge := 'English Literature';
 ```
 
 
-```
+```js
 ScientificMethod IMPLEMENTS I_SubjectMatter
 
 GetKnowledge() : STRING
@@ -435,7 +435,7 @@ GetKnowledge := 'Scientific Method';
 
 To use these in a program now we could do the following
 
-```
+```js
 MAIN
 VAR
     TeacherOne : Teacher;
@@ -471,7 +471,7 @@ The final piece we'll talk about here is that we have our teacher that by defaul
 
 So what does every teacher that can't teach teach?
 
-```
+```js
 FUNCTION_BLOCK GymSubject IMPLEMENTS I_SubjectMatter
 
 GetKnowledge() : STRING
@@ -482,7 +482,7 @@ GetKnowledge := 'Gym class';
 
 We can then assign that as an initial value in the Teacher function block.
 
-```
+```js
 FUNCTION_BLOCK Teacher
 VAR
     _DefaultClass : GymSubject;
@@ -509,7 +509,7 @@ No, we want to test instead that our code behaves in the correct way when the ou
 
 Concept of code coverage
 
-```
+```js
 IF Axis.Position > SafeZone THEN
     //We're safe to move, issue movement commands
 ELSIF Axis.Error THEN
@@ -528,7 +528,7 @@ Instead we want to think about a behavior that we want to test.
 
 "I need to ensure that if my axis is not in the right position, we don't accidentally try to move other equipment"
 
-```
+```js
 ExpectedResult := FALSE;
 Axis.Position := SafeZone - 1;
 Module.TryDangerousAction();
@@ -570,7 +570,7 @@ Next step is to use the mock.
 
 Inside the `SimpleProcess` declration, make a new MockAxis and assign it in the init section.
 
-```
+```js
 VAR
     _MockAxis : MockAxis;
 END_VAR
