@@ -46,12 +46,20 @@ theme:
 <!-- end_slide -->
 
 # Pre-Requisites
+You can follow along with the presentation to copy/paste code here: 
+
+https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.md
+
+or
+
+https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.html
 
 Everyone should've already installed
 
 - TF1040 from the expirmental feed
-- cloned the following repository from Beckhoff Community github
-<TODO: Insert link>
+- cloned the following sample repository:
+
+https://github.com/ctrostel90/NEM26_CICD_MockApplicationSample
 
 <!-- end_slide -->
 
@@ -268,6 +276,8 @@ AssertEqual(expected := 1, actual := AdderTest.Output, msg := "Division by 0 not
 Succeeded();
 ```
 
+<!-- pause -->
+
 Finally, in our MAIN we can remove all our pre-existing code and add the necessary pieces for the testing framework.
 
 ```js
@@ -286,9 +296,17 @@ After activating you can use the Test UI client to run our tests and see the res
 
 To help give some strategies on how to write some testable code, we need to take a bit of a detour.
 
-We're going to set the stage here by imaging we're all teachers. You all know how to teach. But you all teach different topics. You teach math, you teach history, you teach literature. Now, I'm the student that is wanting to learn about all these topics. I don't know anything about how to teach or the topics we're learning. But I know that you all, have the ability to teach. So I can go to every single one of you and ask "Teach me".
+<!--pause -->
 
-So we can imagine that we have a
+We're going to set the stage here by imaging we have a group of teachers. They all know how to teach. But they all teach different topics. One teaches math, another teaches history, another literature. Now, there is a student that is wanting to learn about all these topics. They don't know anything about how to teach or the topics they're learning. 
+
+But they know that all of the teachers, have the ability to teach. 
+
+So the student can go to every single teacher and ask "Teach me".
+
+<!--pause -->
+
+A code representation could look like this:
 
 ```js
 FUNCTION_BLOCK HistoryTeacher
@@ -308,7 +326,9 @@ METHOD Teach
 StudentKnowledge := StudentKnowledge + "Science";
 ```
 
-Because you all know how to teach, any student can interact with you in the same manner. They can come and be taught. They know nothing about how the teaching is going to be done, only that there will be teaching done. This abstraction concept is a very important topic that we'll utilize heavily when we want to create testable code.
+Because the teachers all know how to teach, any student can interact with a teacher in the same manner. They can come and be taught. The students know nothing about how the teaching is going to be done, only that there will be teaching done. This abstraction concept is a very important topic that we'll utilize heavily when we want to create testable code.
+
+<!-- end_slide -->
 
 # Continuing the Example
 Let's continue our example in some more code.
@@ -321,7 +341,7 @@ VAR
 	_TeachTopic : E_TeachingTopic;
 END_VAR
 ```
-
+<!-- pause -->
 The Teaching topic enumeration we create to have our 3 example topics from above.
 
 ```js
@@ -334,11 +354,15 @@ TYPE E_TeachingTopic :
 END_TYPE
 ```
 
+<!-- pause -->
+
 Then for the Teacher Function block, we'll add a "TeachTopic" property that will assign the local _TeachTopic with a Getter/Setter function. 
 
-Additionally, we'll create a `Teach` method that takes a "Student's knowledge" (represented as just a string here) that the Teacher will add their knowledge to it.
+<!-- end_slide -->
 
-We can solve it with a simple case statement. Something like this:
+Finally, we'll create a `Teach` method that takes a "Student's knowledge" (represented as just a string here) that the Teacher will add their knowledge to it.
+
+The implementation can look something like this:
 
 ```js
 METHOD Teach : STRING
@@ -357,14 +381,21 @@ CASE _TeachTopic OF
 END_CASE
 Teach := Student;
 ```
+<!-- pause -->
+But what if say, we start to add more specifics to the topic being taught. We want to have a Calculus teacher. But in order to teach Calculus they need to make sure that they already have learned algebra. Etc etc. The complexity of this one function starts to increase quite a bit. 
 
-But what if say, we start to add more specifics to the topic being taught. We want to have a Calculus teacher. But in order to teach calculus they need to make sure that they already have learned algebra. Etc etc. The complexity of this one function starts to increase quite a bit. And most importantly anytime you create a new Teacher instance, they all have this extra code in every single one. Even if they're just a Literature teacher.
+<!-- pause -->
+And most importantly anytime you create a new Teacher instance, they all have this extra code in every single one. Even if they're just a Literature teacher.
+<!-- end_slide -->
+# Enter: Interfaces
 
 Instead, we can utilize the programming implementation of the first example of abstraction I just gave - interfaces
 
+<!--pause -->
 We'll start by adding two new Interfaces to our project named `I_Teacher` and `I_SubjectMatter`.
 
-For the `I_Teacher` we'll add one Method Teach:
+<!--pause -->
+For the `I_Teacher` we'll add one Method `Teach()`:
 
 ```js
 Teach : STRING
@@ -373,10 +404,13 @@ VAR_INPUT
 END_VAR
 ```
 
-We'll also add a property that is called SubjectMatter of type `I_SubjectMatter`
+<!--pause -->
+We'll also add a property that is called `SubjectMatter` of type `I_SubjectMatter`
 
+<!--pause -->
 For the `I_SubjectMatter`, we'll add a method named `GetKnowledge` that returns type `STRING`.
 
+<!--pause -->
 We'll now make a new Teacher object named TeacherOOP that implements `I_Teacher`. This teacher we'll define as follows:
 
 ```js
@@ -386,6 +420,7 @@ VAR
 END_VAR
 ```
 
+<!--pause -->
 On our TeacherOOP object, in the getter/setter for the SubjectMatter property assign/return the `_SubjectMatter` variable
 
 ```js
@@ -395,7 +430,7 @@ SET:
     _SubjectMatter := SubjectMatter;
 ```
 
-Next step is to add an implementation to the `Teach` method on the Teacher. For that we'll do the following:
+Next step is to add an implementation to the `Teach()` method on the Teacher. For that we'll do the following:
 
 ```js
 Teach : STRING
@@ -406,7 +441,7 @@ END_VAR
 CONCAT(StudentKnowledge, _SubjectMatter.GetKnowledge());
 Teach := StudentKnowledge;
 ```
-
+<!--end_slide -->
 The final step is for us to create our Subject Matters. We'll make three quickly.
 
 ```js
@@ -416,6 +451,7 @@ GetKnowledge() : STRING
 
 GetKnowledge := 'Calculus';
 ```
+
 ```js
 EnglishLiteratureSubject IMPLEMENTS I_SubjectMatter
 
@@ -423,7 +459,6 @@ GetKnowledge() : STRING
 
 GetKnowledge := 'English Literature';
 ```
-
 
 ```js
 ScientificMethod IMPLEMENTS I_SubjectMatter
@@ -433,6 +468,7 @@ GetKnowledge() : STRING
 GetKnowledge := 'Scientific Method';
 ```
 
+<!--end_slide-->
 To use these in a program now we could do the following
 
 ```js
@@ -460,13 +496,17 @@ IF ClassInSession THEN
 END_IF
 ```
 
-
+<!-- pause -->
 The benefit here is we've seperated out the topic of how to teach from the person teaching. We taken the responsibility of the 'objects' and seperated them out into smaller code sections. 
 
+<!-- pause -->
 Why this tangent in a class about unit testing?
 
+<!-- pause -->
 Because this is a methodology on how to write testable code. The teacher in order to teach, is dependant upon the topic. If the code for teaching that topic lies in the teacher, then we have to setup/control the that code anytime we want to test anything about the teacher. Seperated out, now we can test the two things independantly. We can test "Does the teacher actually teach when we tell them to teach?" not caring about the topic/methodology of teaching so much as their ability to teach. And we can test the subject matter for "Does the subject matter actually provide the correct information on the topic when taught?"
 
+<!-- end_slide -->
+# Default Behavior
 The final piece we'll talk about here is that we have our teacher that by default, doesn't know how to teach anything. So if a new teacher is made and a topic not assigned, we'll see a page fault if someone asks them to teach. Here we can make a "default behavior" so that if a teacher doesn't know a topic, they still can teach something.
 
 So what does every teacher that can't teach teach?
@@ -493,13 +533,17 @@ END_VAR
 
 What we've just implemented is the concept of dependency inversion and utilized the 'strategy pattern'. This is the "D" portion of the commonly referenced "SOLID" programming practices. The more of the SOLID practices that are followed, the easier code will likely become to unit test. 
 
-# Anytime when writting a unit test
+<!-- end_slide -->
+# Should I Make a Unit Test???
 
 Is this test, going to be worth the effort and help me ensure my code is safer? Very often you will run into when it's not worth the effort, and that's okay!
+
+<!-- end_slide -->
 
 # Considerations When Testing
 
 It's important and our job to understand what to actually test.
+<!-- pause -->
 
 For example: Do we need to test that MC_Power.Status goes true when the Execute boolean is true?
 No, we want to test instead that our code behaves in the correct way when the output of Mc_Power.Status is True. Our code is responsible for preforming the application process, so we want to validate that. We can rely on the testing done by the MC2 library itself to validate it is actually enabling the axis.
@@ -520,10 +564,12 @@ END_IF
 
 ```
 
+<!-- pause -->
 Code coverage looks and says you should have a test that covers all possible paths of the code execution. Every if condition/fork needs to have a test associated to it.
 
 This is a dangerous concept to operate off of. You'll waste a lot of time if you approach this way.
 
+<!-- pause -->
 Instead we want to think about a behavior that we want to test. 
 
 "I need to ensure that if my axis is not in the right position, we don't accidentally try to move other equipment"
@@ -540,9 +586,10 @@ Test.Assert(ExpectedResult,ActualResult)
 This helps simplify your tests and keeps them focused. Making it so that you don't create endless tests.
 
 <!-- end_slide -->
-# Mockups
-We took a detour down OOP lane for a reason. Despite that we will try to decouple software components from each other, our software components will have dependancies. Those dependancies can't be avoided. Have an application that's driving a conveyor belt? We're dependant on there being an axis.
 
+# Mockups
+We took a detour down OOP lane for a reason. Despite our best intentions to decouple software components from each other, our software components will have dependancies. Those dependancies can't be avoided. Have an application that's driving a conveyor belt? We're dependant on there being an axis.
+<!-- pause-->
 This means at times we're going to need to replace those dependancies with abstractions. Instead of depending on an actual axis control, we can create an abstraction axis, and swap out the code to use that. This is called a mockup, mockups with interfaces can aide us in the ability to make testable code.
 
 It is also, very often where you have to decide if something is worth the effort.
@@ -556,15 +603,31 @@ For this exercise, we'll use a sample application prepared ahead of time. This a
 - A cylinder that is used to do work on a product
 - When a product is present, the product is moved to position, the cylinder is extended and held for a time before being retracted and the Axis moved to remove the product
 
+<!-- pause -->
 In the sample, there is a UnitTest already written. We want to test and validate that when we call the `Process.ProduceProduct()` method, the PartCount is incremented and the cylinder's position is retracted.
 
-Running the test however, you can see the test time's out! The axis never enables because there is no connection to the hardware. What can we do??
+Let's open and test the project. 
 
+<!-- pause -->
+After starting the test however, you can see the test time's out! The axis never enables because there is no connection to the hardware. What can we do??
+
+<!-- pause -->
 Well, we can use a mockup axis and the 'Strategy Pattern' we learned about earlier!
-
+<!-- end_slide -->
+# Mockup Exercises Cont'd
+<!-- column_layout: [3,1]-->
+<!-- column: 0-->
 In the folder from the repository, there is a `MockAxis` folder. Add it to the UnitTest project.
+<!-- column: 1-->
+![](images/mockaxis_file.png)
+<!-- pause -->
 
-This is an example of how we can mock up the axis wrapper's behavior. We don't actually care when we're testing this process that the Axis is enabled and actually moves. If we're concerned that the AxisWrapper is working correctly, we can write a UnitTest specifically testing it's functionality. So in this case, the Mock mostly just fakes the control. When a MoveToPosition command is given, it sets an internal `_Position` variable to the commanded position. This is then returned with the `SetPosition` property that the `BasicProcess.ProduceProduct()` method utilizes.
+<!-- column: 0-->
+This is an example of how we can mock up the axis wrapper's behavior. 
+
+We don't actually care when we're testing this process that the Axis is enabled and actually moves. If we're concerned that the AxisWrapper is working correctly, we can write a UnitTest specifically testing it's functionality. So in this case, the Mock mostly just fakes the control. When a MoveToPosition command is given, it sets an internal `_Position` variable to the commanded position. This is then returned with the `SetPosition` property that the `BasicProcess.ProduceProduct()` method utilizes.
+
+<!-- pause -->
 
 Next step is to use the mock.
 
@@ -582,12 +645,14 @@ END_IF
 
 Reactivate and run the test again. It should pass this time! This is an example of you can use Mockups and interfaces to decouple your code and make it testable.
 
+<!-- pause -->
+
 Of course, as mentioned earlier, the effort here can balloon if you're not careful so it's important to think critically at the start of the application if you're considering unit testing and architect appropriately to enable unit testing!!
 
 <!-- end_slide -->
 
 # Customer Strategies
-### Existing Code base, how can we add unit tests?
+## Existing Code base, how can we add unit tests?
 Find the low hanging fruit:
 - Find the algorithims. 
 - Find the math sections.
@@ -596,8 +661,11 @@ Find the low hanging fruit:
 It can be really difficult to unit test sections of the application if the architecture isn't supporting it from the start as shown in the previous examples. In these cases where there wasn't a deliberate architecture implemented at the get go, the effort may exceed the benefit!
 
 If there is still adamant interest, start looking for the smallest components. Look for sections that are part of a framework, start at the "bottom building blocks". An Axis wrapper, a recipe system etc.
-
+<!-- pause -->
 ### How do we get customer to take the first step into CI/CD practices
+
+<!-- pause -->
+
 In general, I believe any customer will benefit from taking any step further into adopting more/another CI/CD practice. But it should be incremental. If a customer isn't using source control, it doesn't make sense to jump straight to deploying a build pipeline with automated deployment, static analysis and unit tests.
 
 A good path is to understand what their desired outcomes are. 
@@ -608,21 +676,24 @@ A good path is to understand what their desired outcomes are.
 CI/CD is an a-la-carte system that the specific meal combination can be customized for the individual customer.
 <!-- end_slide -->
 
-## Test Driven Development
-### What is it/What is it not?
+# Test Driven Development (TDD)
+## What is it/What is it not?
 TDD is a way of writing code that involves writing an automated unit-level test case that fails, then writing just enough code to make the test pass, then refactoring both the test code and the production code, then repeating with another new test case. It's defined as the idea of having a very small loop:
 1. Write a test that will fail
 2. Write the code to make that test pass
 3. Go back to step 1
 
+<!-- pause -->
 This approach if you follow it to the letter can seem incredibly slow. The idea is that you're constantly testing your code base and constantly building up regression tests. Personally I find this approach hard to be dilligent on and a little frustrating in our field with again, interacting with hardware. I think it's an admirable one to try and follow but again, practically speaking I know few teams that use this approach to a strict 'T' while developing software.
 
-### How can we you use it in your workflow?
-There are ways where this approach can be incredibly useful when applying it to development and one in particular i've found very useful. The most useful application i find applying the stricter TDD process is in the bug reporting/fixing workflow.
+<!-- pause -->
+## How can we you use it in your workflow?
+<!-- pause -->
+There are ways where this approach can be incredibly useful when applying it to development and one in particular I've found very useful. The most useful application I find applying the stricter TDD process is in the bug reporting/fixing workflow.
 
 A bug is seen/reported on a software that you have unit testing on. There's a good chance when you see the bug, you have an idea on where to start looking, not always the case but often you'll have an idea. The first step however, is resist the temptation to go digging in the code and finding/fixing the bug. The first step is to write a unit test that shows the failure. Write a unit test that would pass if the behavior in question was working correctly. Then, once you have that, go start digging in code and trying to fix things. Think you've fixed it? run your unit test. Does it fail still? nope, you've not fixed it, back to the drawing board. Repeat this process until the test passes. Run the rest of your unit tests as a regression and close out the issue as done.
 
-### Example
-### Exercises
+## Example
+## Exercises
 Time to do an exercise with a Logging Helper library. This is a library made mostly for this class however it is a generally useful tool. The 
 
