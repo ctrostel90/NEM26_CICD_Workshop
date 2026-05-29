@@ -1,11 +1,14 @@
 ---
 title: Software CICD Presentation
+author: Connor Trostel
 theme:
     name: tokyonight-night
+    author: Connor Trostel
 ---
 
 
-# Goals
+Goals
+===
 
 - Understanding what is CI/CD?
 - What CI/CD tools does Beckhoff have?
@@ -15,8 +18,9 @@ theme:
 
 <!-- end_slide -->
 
-# Agenda
-<!-- alignment: 'right'-->
+Agenda
+===
+
 ### Intro
 - What is CICD
 - Beckhoff Products and Advantages
@@ -45,32 +49,39 @@ theme:
 
 <!-- end_slide -->
 
-# Pre-Requisites
+Pre-Requisites
+===
+
 You can follow along with the presentation to copy/paste code here: 
 
 https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.md
 
 or
 
-https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.html
+https://ctrostel90.github.io/NEM26_CICD_Workshop/presentation.html
 
 Everyone should've already installed
 
 - TF1040 from the expirmental feed
-- cloned the following sample repository:
+- cloned the following sample repositories:
 
 https://github.com/ctrostel90/NEM26_CICD_MockApplicationSample
 
+https://github.com/ctrostel90/TwinCatLoggingHelper
+
 <!-- end_slide -->
 
-# CICD Presentation
+CICD Presentation
+===
+
 
 To Powerpoint!
 ![](images/twincat_presentation.png)
 <!-- end_slide -->
 
-# Unit Tests
-
+Unit Tests
+===
+<!-- alignment: "center"-->
 What is a unit test?
 
 <!-- pause -->
@@ -93,12 +104,17 @@ With that, let's make one.
 <!-- pause -->
 To TwinCat!
 <!-- end_slide -->
-# Making a UnitTest
+Making a UnitTest
+===
+
 
 We'll start with the most common basic exmaple, some simple math functions.
 
 <!-- pause -->
-Create a new FB, name it adder. Add two inputs and an output
+Adder Function Block
+===
+
+Create a new FB, name it `Adder`. Add two inputs and an output
 
 ```js
 FUNCTION_BLOCK Adder
@@ -118,18 +134,18 @@ Output := Input1 + Input2;
 ```
 
 <!-- end_slide -->
+Our First Unit Tests
+===
 
-In our Main let's instantiate that adder, and make a little test.
+In our Main let's instantiate that `Adder`, and make a little test.
 
-```js
+```js {1-5|7-11}
 VAR
     TestAdder : Adder;
     runTest : BOOL;
     TestPass : BOOL;
 END_VAR
 
-```
-```js
 IF runTest THEN
 	runTest := FALSE;
 	testAdder(Input1 := 1, Input2 := 2);
@@ -140,6 +156,8 @@ END_IF
 Now we have a simple test! We can change the Adder's functionality and see the result of our test. 
 
 <!-- end_slide -->
+Divider Function Block
+===
 
 Let's expand and make another function block, a Divider.
 
@@ -156,13 +174,15 @@ END_VAR
 ```js
 Output := Input1 / Input2;
 ```
-
+<!--pause -->
 Add our first test to MAIN.
 
-```js
-TestDivider : Divider;
-runDividerTest : BOOL;
-DividerTestPass : BOOL;
+```js {1-5|7-11}
+VAR
+    TestDivider     : Divider;
+    runDividerTest  : BOOL;
+    DividerTestPass : BOOL;
+END_VAR
 
 IF runDividerTest THEN
     runDividerTest := FALSE;
@@ -172,6 +192,8 @@ END_IF
 ```
 
 <!-- end_slide -->
+More Tests!
+===
 
 Now we have a divider and a test.
 
@@ -179,9 +201,11 @@ But we have a divide by 0 potential. So let's make a test that will catch that a
 
 In Main we'll add our test variables and test code
 
-```js
-runDividerTest2 : BOOL;
-DividerTestPass2 : BOOL;
+```js {1-4|6-10}
+VAR
+    runDividerTest2  : BOOL;
+    DividerTestPass2 : BOOL;
+END_VAR
 
 IF runDividerTest2 THEN
     runDividerTest2 := FALSE;
@@ -191,6 +215,8 @@ END_IF
 ```
 
 <!-- pause -->
+More Tests!
+===
 
 Inside our Divider we'll check for Input2 to be 0.
 
@@ -204,7 +230,8 @@ Ouput := Input1 / Input2;
 ```
 
 <!-- end_slide -->
-# Exercise End
+How Does this Scale?
+===
 
 Now we have 2 functions with a few test cases. 
 <!-- pause-->
@@ -216,23 +243,28 @@ But this setup is cumbersome and really difficult for us to manage, we have to a
 
 <!-- end_slide -->
 
-# Test Frameworks
+Test Frameworks
+===
 
 Enter the Unit Testing Framework. This is what the framework provides. A set of tools to aide in writting and running unit tests.
 
-There are lots of options you've likely heard about in our space of automation and TwinCat. Some examples: TcUnit, TestSuite, CoUnit, Codesys Test Manager to name a few.
+There are lots of options you've likely heard about in our space of automation and TwinCat. Some examples: TcUnit, TestSuite, CoUnit, Codesys Test Manager to name a few. Each has their own pros and cons.
 
+<!-- pause -->
 But, we now have a framework!
 
 <!-- end_slide -->
-# TF1040
+TF1040
+===
 
-We're not going to deep dive TF1040, but we'll use it moving forward in this workshop.
+We're not going to deep dive TF1040, but we'll use it moving forward in this workshop, so let's get a mile high overview
 
-To Powerpoint!
+<!-- alignment: "center"-->
+**To Powerpoint!**
 
 <!-- end_slide -->
-# Refactor to use TF1040
+Refactor to use TF1040
+===
 
 Let's refactor to use TF1040 instead.
 
@@ -242,7 +274,7 @@ Add in the Tc3_PlcTestFramework to the project.
 
 Create a new FB named AdderTests. Use the following code as the header/declaration.
 
-```js
+```js {1-11|1-3|4-7|7-11}
 { attribute 'Name':='Adder-Test' }
 { attribute 'Timeout':='t#5s' }
 { attribute 'Owner':='TestOwner' }
@@ -259,7 +291,7 @@ Succeeded();
 <!-- pause -->
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
-```js
+```js {1-14|1-3|4-7|9-14}
 { attribute 'Name':='Divider-Test' }
 { attribute 'Timeout':='t#5s' }
 { attribute 'Owner':='TestOwner' }
@@ -280,7 +312,7 @@ Succeeded();
 
 Finally, in our MAIN we can remove all our pre-existing code and add the necessary pieces for the testing framework.
 
-```js
+```js {1-4|6}
 VAR
     TestAdder : AdderTests;
     TestDivider : DividerTests;
@@ -292,7 +324,9 @@ After activating you can use the Test UI client to run our tests and see the res
 
 <!-- end_slide -->
 
-# Testable Code
+Testable Code
+===
+
 
 To help give some strategies on how to write some testable code, we need to take a bit of a detour.
 
@@ -330,7 +364,9 @@ Because the teachers all know how to teach, any student can interact with a teac
 
 <!-- end_slide -->
 
-# Continuing the Example
+Continuing the Example
+===
+
 Let's continue our example in some more code.
 
 We first create a Teacher FB that has a local variable assocaited to it:
@@ -359,12 +395,14 @@ END_TYPE
 Then for the Teacher Function block, we'll add a "TeachTopic" property that will assign the local _TeachTopic with a Getter/Setter function. 
 
 <!-- end_slide -->
+Teach Method Implementation
+===
 
 Finally, we'll create a `Teach` method that takes a "Student's knowledge" (represented as just a string here) that the Teacher will add their knowledge to it.
 
 The implementation can look something like this:
 
-```js
+```js {1-4|5-15}
 METHOD Teach : STRING
 VAR_INPUT
 	Student : STRING;
@@ -382,12 +420,15 @@ END_CASE
 Teach := Student;
 ```
 <!-- pause -->
+
 But what if say, we start to add more specifics to the topic being taught. We want to have a Calculus teacher. But in order to teach Calculus they need to make sure that they already have learned algebra. Etc etc. The complexity of this one function starts to increase quite a bit. 
 
 <!-- pause -->
 And most importantly anytime you create a new Teacher instance, they all have this extra code in every single one. Even if they're just a Literature teacher.
 <!-- end_slide -->
-# Enter: Interfaces
+Enter: Interfaces
+===
+
 
 Instead, we can utilize the programming implementation of the first example of abstraction I just gave - interfaces
 
@@ -432,7 +473,7 @@ SET:
 
 Next step is to add an implementation to the `Teach()` method on the Teacher. For that we'll do the following:
 
-```js
+```js {1-4|6-7}
 Teach : STRING
 VAR_INPUT
     StudentKnowledge : STRING;
@@ -444,7 +485,7 @@ Teach := StudentKnowledge;
 <!--end_slide -->
 The final step is for us to create our Subject Matters. We'll make three quickly.
 
-```js
+```js 
 CalculusSubject IMPLEMENTS I_SubjectMatter
 
 GetKnowledge() : STRING
@@ -471,16 +512,16 @@ GetKnowledge := 'Scientific Method';
 <!--end_slide-->
 To use these in a program now we could do the following
 
-```js
+```js {1-11|13-22}
 MAIN
 VAR
     TeacherOne : Teacher;
 
     //Subjects
-    Calculus : CalculusSubject;
+    Calculus   : CalculusSubject;
     EnglishLit : EnglishLiteratureSubject;
 
-    StudentOne : STRING;
+    StudentOne   : STRING;
     ClassSubject : E_TeachingTopic;
 END_VAR
 
@@ -506,7 +547,9 @@ Why this tangent in a class about unit testing?
 Because this is a methodology on how to write testable code. The teacher in order to teach, is dependant upon the topic. If the code for teaching that topic lies in the teacher, then we have to setup/control the that code anytime we want to test anything about the teacher. Seperated out, now we can test the two things independantly. We can test "Does the teacher actually teach when we tell them to teach?" not caring about the topic/methodology of teaching so much as their ability to teach. And we can test the subject matter for "Does the subject matter actually provide the correct information on the topic when taught?"
 
 <!-- end_slide -->
-# Default Behavior
+Default Behavior
+===
+
 The final piece we'll talk about here is that we have our teacher that by default, doesn't know how to teach anything. So if a new teacher is made and a topic not assigned, we'll see a page fault if someone asks them to teach. Here we can make a "default behavior" so that if a teacher doesn't know a topic, they still can teach something.
 
 So what does every teacher that can't teach teach?
@@ -534,13 +577,17 @@ END_VAR
 What we've just implemented is the concept of dependency inversion and utilized the 'strategy pattern'. This is the "D" portion of the commonly referenced "SOLID" programming practices. The more of the SOLID practices that are followed, the easier code will likely become to unit test. 
 
 <!-- end_slide -->
-# Should I Make a Unit Test???
+Should I Make a Unit Test???
+===
+
 
 Is this test, going to be worth the effort and help me ensure my code is safer? Very often you will run into when it's not worth the effort, and that's okay!
 
 <!-- end_slide -->
 
-# Considerations When Testing
+Considerations When Testing
+===
+
 
 It's important and our job to understand what to actually test.
 <!-- pause -->
@@ -549,7 +596,8 @@ For example: Do we need to test that MC_Power.Status goes true when the Execute 
 No, we want to test instead that our code behaves in the correct way when the output of Mc_Power.Status is True. Our code is responsible for preforming the application process, so we want to validate that. We can rely on the testing done by the MC2 library itself to validate it is actually enabling the axis.
 
 <!-- end_slide -->
-# Code Coverage
+Code Coverage
+===
 
 Concept of code coverage
 
@@ -587,7 +635,9 @@ This helps simplify your tests and keeps them focused. Making it so that you don
 
 <!-- end_slide -->
 
-# Mockups
+Mockups
+===
+
 We took a detour down OOP lane for a reason. Despite our best intentions to decouple software components from each other, our software components will have dependancies. Those dependancies can't be avoided. Have an application that's driving a conveyor belt? We're dependant on there being an axis.
 <!-- pause-->
 This means at times we're going to need to replace those dependancies with abstractions. Instead of depending on an actual axis control, we can create an abstraction axis, and swap out the code to use that. This is called a mockup, mockups with interfaces can aide us in the ability to make testable code.
@@ -595,7 +645,9 @@ This means at times we're going to need to replace those dependancies with abstr
 It is also, very often where you have to decide if something is worth the effort.
 
 <!-- end_slide -->
-# Mockup Exercise
+Mockup Exercise
+===
+
 
 For this exercise, we'll use a sample application prepared ahead of time. This application is an application to do some work on a product. It has a few pieces:
 - A sensor to tell when a product is present in the system
@@ -614,7 +666,9 @@ After starting the test however, you can see the test time's out! The axis never
 <!-- pause -->
 Well, we can use a mockup axis and the 'Strategy Pattern' we learned about earlier!
 <!-- end_slide -->
-# Mockup Exercises Cont'd
+Mockup Exercises Cont'd
+===
+
 <!-- column_layout: [3,1]-->
 <!-- column: 0-->
 In the folder from the repository, there is a `MockAxis` folder. Add it to the UnitTest project.
@@ -651,7 +705,9 @@ Of course, as mentioned earlier, the effort here can balloon if you're not caref
 
 <!-- end_slide -->
 
-# Customer Strategies
+Existing Code Base Strategies
+===
+
 ## Existing Code base, how can we add unit tests?
 Find the low hanging fruit:
 - Find the algorithims. 
@@ -662,23 +718,27 @@ It can be really difficult to unit test sections of the application if the archi
 
 If there is still adamant interest, start looking for the smallest components. Look for sections that are part of a framework, start at the "bottom building blocks". An Axis wrapper, a recipe system etc.
 <!-- pause -->
-### How do we get customer to take the first step into CI/CD practices
+### I want to take the first steps into CI/CD, what do I do?
 
 <!-- pause -->
 
-In general, I believe any customer will benefit from taking any step further into adopting more/another CI/CD practice. But it should be incremental. If a customer isn't using source control, it doesn't make sense to jump straight to deploying a build pipeline with automated deployment, static analysis and unit tests.
+In general, I believe any developer/user will benefit from taking any step further into adopting more/another CI/CD practice. But it should be incremental. If a user isn't using source control, it doesn't make sense to jump straight to deploying a build pipeline with automated deployment, static analysis and unit tests.
 
-A good path is to understand what their desired outcomes are. 
-- Are they interested in more unified code style? -> Static Analysis
-- Are they interested in more stable code? -> Unit Testing, Source Control, 
+A good path is to understand what are the desired outcomes : 
+- Interested in more unified code style? -> Static Analysis
+- Interested in more stable code? -> Unit Testing, Source Control
 - Managing versions in the field? -> Pipeline + Automation Interface
 
-CI/CD is an a-la-carte system that the specific meal combination can be customized for the individual customer.
+CI/CD is an a-la-carte system that the specific meal combination can be customized for the individual user
 <!-- end_slide -->
 
-# Test Driven Development (TDD)
+Test Driven Development (TDD)
+===
+
 ## What is it/What is it not?
-TDD is a way of writing code that involves writing an automated unit-level test case that fails, then writing just enough code to make the test pass, then refactoring both the test code and the production code, then repeating with another new test case. It's defined as the idea of having a very small loop:
+TDD is a way of writing code that involves writing an automated unit-level test case that fails, then writing just enough code to make the test pass, then refactoring both the test code and the production code, then repeating with another new test case. It's an approach often discussed in books and in the IT field.
+
+It's defined as the idea of having a very small loop:
 1. Write a test that will fail
 2. Write the code to make that test pass
 3. Go back to step 1
@@ -693,7 +753,79 @@ There are ways where this approach can be incredibly useful when applying it to 
 
 A bug is seen/reported on a software that you have unit testing on. There's a good chance when you see the bug, you have an idea on where to start looking, not always the case but often you'll have an idea. The first step however, is resist the temptation to go digging in the code and finding/fixing the bug. The first step is to write a unit test that shows the failure. Write a unit test that would pass if the behavior in question was working correctly. Then, once you have that, go start digging in code and trying to fix things. Think you've fixed it? run your unit test. Does it fail still? nope, you've not fixed it, back to the drawing board. Repeat this process until the test passes. Run the rest of your unit tests as a regression and close out the issue as done.
 
-## Example
-## Exercises
-Time to do an exercise with a Logging Helper library. This is a library made mostly for this class however it is a generally useful tool. The 
+<!-- pause -->
+Let's try some
+<!-- end_slide -->
+Example and Exercises
+===
+
+Time to do an exercise with a Logging Helper library.
+
+This should already be cloned 
+
+https://github.com/ctrostel90/TwinCatLoggingHelper
+
+This is a library made mostly for this class however it is a generally useful tool. The library provides a wrapper around some basic logging functionality. It is rudimentary and logs to an Array of strings, however it could easily be expanded to also include logging to the EventLogger or whatever logging system you'd like.
+
+The project contains:
+<!-- column_layout: [1,1]-->
+<!-- column: 0 -->
+1. The Development Library Itself
+2. A TF1040 Unit Testing Project
+3. A Sandbox PLC project for testing/seeing the library in action
+
+<!-- column: 1 -->
+![Overview](./images/tdd_library_overview.png)
+
+<!-- column: 0 -->
+<!--pause-->
+Open the solution and activate. Login to the Sandbox PLC project and you can set the various variables to see how the logging system behaves.
+
+Additionally, let's take a look at the Unit tests and run them. They should all be passing and we can see their implementation running through a variety of basic unit tests for the library.
+
+<!--pause-->
+However there are some built in "undocumented features" in the library that we missed in development!
+
+Let's try and find them and fix them using a TDD approach!
+
+<!-- end_slide -->
+
+Exercise 1
+===
+
+
+The library seems to be working okay, but you've received a bug report that a user is saying "I can never seem to fill the last message entry in the Log.Messages?"
+
+- Create a unit test to recreate this problem
+- Fix the bug
+- Confirm the unit test passes
+- Confirm all tests still pass
+
+<!-- end_slide -->
+
+Exercise 2
+===
+
+
+A user is asking "What does the severity do? I don't see it showing up anywhere?"
+
+
+- Create/modify a unit test to recreate this problem
+- Fix the bug
+- Confirm the unit test passes
+- Confirm all tests still pass
+
+<!-- end_slide -->
+Exercises Conclusion
+===
+
+Look at the `post_exercises` branch for a sample of how to complete if you get stuck/run out of time
+
+<!-- end_slide -->
+
+Fin!
+===
+
+Questions? 
+Comments?
 
