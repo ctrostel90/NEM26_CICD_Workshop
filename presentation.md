@@ -23,28 +23,38 @@ Agenda
 
 ### Intro
 - What is CICD
-- Beckhoff Products and Advantages
+
 <!--pause-->
 ### Testing Introduction
 - What is Unit Testing
-- Unit Testing vs Integration Testing
 - Hands on exercises
+- Testing Frameworks
+
+<!-- pause-->
+### TF1040 Unit Test Framework
+- Introduction
+- Exercises
 
 <!--pause-->
-### Unit Testable Code
-- Techniques on how to create it
-- Pitfalls
-- Examples and Hands on Exercises
+### Programming Detour
+- Slight detour to review some programming concepts
+- Interfaces
 
 <!--pause-->
-### Customer Strategies
+### Unit Testing Pitfalls
+- Code Coverage
 - Approaching conversation with customers
 - Adding unit testing to existing code bases
+
+
+<!--pause-->
+### Testable Code Bases
+- Mockups
+- Exercises
 
 <!--pause-->
 ### Test Driven Development
 - What is it?
-- Pros/Cons
 - Hands On exercises
 
 <!-- end_slide -->
