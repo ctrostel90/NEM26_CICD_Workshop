@@ -22,6 +22,8 @@ Agenda
 ===
 
 ### Intro
+<!--column_layout: [1,1]-->
+<!-- column: 0-->
 - What is CICD
 
 <!--pause-->
@@ -39,7 +41,7 @@ Agenda
 ### Programming Detour
 - Slight detour to review some programming concepts
 - Interfaces
-
+<!--column: 1-->
 <!--pause-->
 ### Unit Testing Pitfalls
 - Code Coverage
@@ -184,7 +186,11 @@ END_VAR
 ```js
 Output := Input1 / Input2;
 ```
-<!--pause -->
+<!--end_slide -->
+
+Divider Function Block
+===
+
 Add our first test to MAIN.
 
 ```js {1-5|7-11}
@@ -224,7 +230,7 @@ IF runDividerTest2 THEN
 END_IF
 ```
 
-<!-- pause -->
+<!-- end_slide -->
 More Tests!
 ===
 
@@ -298,7 +304,9 @@ AssertEqual(expected := 4, actual := AdderTest.Output);
 Succeeded();
 ```
 
-<!-- pause -->
+<!-- end_slide -->
+Refactor to use TF1040
+===
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
 ```js {1-14|1-3|4-7|9-14}
@@ -311,14 +319,18 @@ VAR
 END_VAR
 
 DividerTest(Input1 := 2, Input2 := 2);
-AssertEqual(expected := 1, actual := AdderTest.Output);
+ExpectedResult := 1;
+AssertEqual(expected := ExpectedResult, actual := DividerTest.Output);
 
 DividerTest(Input1 := 2, Input2 := 0);
-AssertEqual(expected := 1, actual := AdderTest.Output, msg := "Division by 0 not protected");
+ExpectedResult := 1;
+AssertEqual(expected := ExpectedResult, actual := DividerTest.Output, message := 'Division by 0 not protected');
 Succeeded();
 ```
 
-<!-- pause -->
+<!-- end_slide -->
+Refactor Continued
+===
 
 Finally, in our MAIN we can remove all our pre-existing code and add the necessary pieces for the testing framework.
 
@@ -348,8 +360,10 @@ But they know that all of the teachers, have the ability to teach.
 
 So the student can go to every single teacher and ask "Teach me".
 
-<!--pause -->
+<!--end_slide -->
 
+Testable Code
+===
 A code representation could look like this:
 
 ```js
@@ -445,7 +459,9 @@ Instead, we can utilize the programming implementation of the first example of a
 <!--pause -->
 We'll start by adding two new Interfaces to our project named `I_Teacher` and `I_SubjectMatter`.
 
-<!--pause -->
+<!--end_slide -->
+Enter: Interfaces
+===
 For the `I_Teacher` we'll add one Method `Teach()`:
 
 ```js
@@ -550,7 +566,7 @@ END_IF
 <!-- pause -->
 The benefit here is we've seperated out the topic of how to teach from the person teaching. We taken the responsibility of the 'objects' and seperated them out into smaller code sections. 
 
-<!-- pause -->
+<!-- end_slide -->
 Why this tangent in a class about unit testing?
 
 <!-- pause -->
