@@ -819,6 +819,17 @@ Let's try and find them and fix them using a TDD approach!
 Exercise 1
 ===
 
+The library seems to be working okay, but you've received a bug report that a user is saying the Subscribed Logs "doesn't ever change value?"
+
+- Create a unit test to recreate this problem
+- Fix the bug
+- Confirm the unit test passes
+- Confirm all tests still pass
+
+<!-- end_slide -->
+
+Exercise 2
+===
 
 The library seems to be working okay, but you've received a bug report that a user is saying "I can never seem to fill the last message entry in the Log.Messages?"
 
@@ -829,7 +840,7 @@ The library seems to be working okay, but you've received a bug report that a us
 
 <!-- end_slide -->
 
-Exercise 2
+Exercise 3
 ===
 
 
