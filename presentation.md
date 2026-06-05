@@ -6,6 +6,27 @@ theme:
     author: Connor Trostel
 ---
 
+Pre-Requisites
+===
+
+You can follow along with the presentation to copy/paste code here: 
+
+https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.md
+
+or
+
+https://ctrostel90.github.io/NEM26_CICD_Workshop/presentation.html
+
+Everyone should've already installed
+
+- TF1040 from the expirmental feed
+- cloned the following sample repositories:
+
+https://github.com/ctrostel90/NEM26_CICD_MockApplicationSample
+
+https://github.com/ctrostel90/TwinCatLoggingHelper
+
+<!-- end_slide -->
 
 Goals
 ===
@@ -61,27 +82,6 @@ Agenda
 
 <!-- end_slide -->
 
-Pre-Requisites
-===
-
-You can follow along with the presentation to copy/paste code here: 
-
-https://github.com/ctrostel90/NEM26_CICD_Workshop/presentation.md
-
-or
-
-https://ctrostel90.github.io/NEM26_CICD_Workshop/presentation.html
-
-Everyone should've already installed
-
-- TF1040 from the expirmental feed
-- cloned the following sample repositories:
-
-https://github.com/ctrostel90/NEM26_CICD_MockApplicationSample
-
-https://github.com/ctrostel90/TwinCatLoggingHelper
-
-<!-- end_slide -->
 
 CICD Presentation
 ===
@@ -309,22 +309,26 @@ Refactor to use TF1040
 ===
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
-```js {1-14|1-3|4-7|9-14}
+```js {1-19|1-3|4-7|9-19}
 { attribute 'Name':='Divider-Test' }
 { attribute 'Timeout':='t#5s' }
 { attribute 'Owner':='TestOwner' }
 FUNCTION_BLOCK DividerTests EXTENDS FB_TestCaseBase
 VAR
     DividerTest : Divider;
+    ExpectedResult : LREAL;
+    ActualResult : LREAL;
 END_VAR
 
 DividerTest(Input1 := 2, Input2 := 2);
 ExpectedResult := 1;
-AssertEqual(expected := ExpectedResult, actual := DividerTest.Output);
+ActualResult := DividerTest.Output;
+AssertEqual(expected := ExpectedResult, actual := ActualResult);
 
 DividerTest(Input1 := 2, Input2 := 0);
-ExpectedResult := 1;
-AssertEqual(expected := ExpectedResult, actual := DividerTest.Output, message := 'Division by 0 not protected');
+ExpectedResult := 0;
+ActualResult := DividerTest.Output;
+AssertEqual(expected := ExpectedResult, actual := ActualResult, message := 'Division by 0 not protected');
 Succeeded();
 ```
 
@@ -842,7 +846,6 @@ The library seems to be working okay, but you've received a bug report that a us
 
 Exercise 3
 ===
-
 
 A user is asking "What does the severity do? I don't see it showing up anywhere?"
 
