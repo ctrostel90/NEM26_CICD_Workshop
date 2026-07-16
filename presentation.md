@@ -19,7 +19,7 @@ https://ctrostel90.github.io/NEM26_CICD_Workshop/presentation.html
 
 Everyone should've already installed
 
-- TF1040 from the expirmental feed
+- TF1140 from the expirmental feed
 - cloned the following sample repositories:
 
 https://github.com/ctrostel90/NEM26_CICD_MockApplicationSample
@@ -34,7 +34,7 @@ Goals
 - Understanding what is CI/CD?
 - What CI/CD tools does Beckhoff have?
 - What is a Unit Test?
-- What is TF1040 and basic usage
+- What is TF1140 and basic usage
 - How to write testable code
 
 <!-- end_slide -->
@@ -54,7 +54,7 @@ Agenda
 - Testing Frameworks
 
 <!-- pause-->
-### TF1040 Unit Test Framework
+### TF1140 Unit Test Framework
 - Introduction
 - Exercises
 
@@ -270,19 +270,19 @@ There are lots of options you've likely heard about in our space of automation a
 But, we now have a framework!
 
 <!-- end_slide -->
-TF1040
+TF1140
 ===
 
-We're not going to deep dive TF1040, but we'll use it moving forward in this workshop, so let's get a mile high overview
+We're not going to deep dive TF1140, but we'll use it moving forward in this workshop, so let's get a mile high overview
 
 <!-- alignment: "center"-->
 **To Powerpoint!**
 
 <!-- end_slide -->
-Refactor to use TF1040
+Refactor to use TF1140
 ===
 
-Let's refactor to use TF1040 instead.
+Let's refactor to use TF1140 instead.
 
 <!-- pause -->
 
@@ -305,7 +305,7 @@ Succeeded();
 ```
 
 <!-- end_slide -->
-Refactor to use TF1040
+Refactor to use TF1140
 ===
 Create a new FB named DividerTests and add the following declaration and code snippet.
 
@@ -801,7 +801,7 @@ The project contains:
 <!-- column_layout: [1,1]-->
 <!-- column: 0 -->
 1. The Development Library Itself
-2. A TF1040 Unit Testing Project
+2. A TF1140 Unit Testing Project
 3. A Sandbox PLC project for testing/seeing the library in action
 
 <!-- column: 1 -->
